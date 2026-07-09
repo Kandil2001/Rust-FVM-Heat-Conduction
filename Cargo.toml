@@ -1,0 +1,11 @@
+[package]
+name = "rust-heat-diffusion-solver"
+version = "0.1.0"
+edition = "2021"
+authors = ["Ahmed Kandil"]
+description = "A compact Rust implementation of a 2D heat-diffusion solver for scientific-computing practice and thermal simulation workflows."
+license = "MIT"
+repository = "https://github.com/Kandil2001/rust-heat-diffusion-solver"
+
+[profile.release]
+opt-level = 3
