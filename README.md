@@ -2,37 +2,53 @@
 
 A simple steady-state heat conduction solver written in Rust using the cell-centred finite volume method.
 
-The case represents a rectangular plate heated from the west side. The east side is kept cold, while the north and south sides are insulated. Heat therefore moves mainly from the hot wall toward the cold wall.
+The model represents a rectangular plate heated from the west side. The east side is kept cold, while the north and south walls are insulated. This creates a simple heat-flow case from the hot wall toward the cold wall.
+
+<p align="center">
+  <img src="results/temperature.svg" alt="Finite-volume temperature field" width="760">
+</p>
 
 ## Problem setup
 
-- Domain size: `0.5 m × 0.5 m`
+- Domain: `0.5 m × 0.5 m`
 - Grid: `80 × 50` control volumes
-- West wall: `360 K`
-- East wall: `300 K`
-- North wall: insulated
-- South wall: insulated
+- West wall temperature: `360 K`
+- East wall temperature: `300 K`
+- North and south walls: insulated
 - Thermal conductivity: `1000 W/(m K)`
+- Plate thickness: `0.01 m`
 
-This is a small educational case based on the finite-volume diffusion models I developed in MATLAB during my bachelor thesis.
+This is one simple case based on the finite-volume heat-transfer models I worked with in MATLAB during my bachelor thesis.
 
 ## Numerical method
 
-The steady heat conduction equation is integrated over every control volume:
+The steady heat conduction equation is integrated over each control volume:
 
 ```text
 ∇ · (k∇T) = 0
 ```
 
-The discretised equation is written as:
+The discretised equation is written in the standard finite-volume form:
 
 ```text
 aP TP = aE TE + aW TW + aN TN + aS TS + Su
 ```
 
-The wall temperatures are included through the finite-volume source terms. The insulated top and bottom walls have zero normal heat flux.
+The fixed wall temperatures are added through source terms. The insulated north and south walls have zero normal heat flux.
 
-The equations are solved iteratively using a Gauss–Seidel update. The calculation stops when the maximum temperature change is below `1.0e-6 K`.
+The equations are solved using a Gauss–Seidel iteration. The solver stops when the maximum temperature change between two iterations is below `1.0e-6 K`.
+
+## Current result
+
+For the current setup, the solver converges after `9,548` iterations.
+
+| Quantity | Result |
+|---|---:|
+| Final residual | `9.989248e-7 K` |
+| Minimum cell-centre temperature | `300.375 K` |
+| Maximum cell-centre temperature | `359.625 K` |
+
+The cell-centre temperatures do not reach exactly `300 K` or `360 K` because the fixed temperatures are applied at the boundary faces, not at the control-volume centres.
 
 ## Run the solver
 
@@ -67,7 +83,15 @@ The program uses only the Rust standard library.
 
 I wanted to rebuild one of the simple finite-volume heat-transfer cases from my bachelor thesis in Rust. The aim was to keep the code clear and show the main numerical steps without using a large CFD library.
 
-This is not a complete thermal model of a processor or cooling system. It is a small numerical-method project for practising finite-volume discretisation and scientific programming in Rust.
+This is not a complete thermal model of a processor or cooling system. It is a small project for practising finite-volume discretisation and scientific programming in Rust.
+
+## Possible next steps
+
+- Add convection boundary conditions
+- Add heat-flux boundary conditions
+- Compare Gauss–Seidel with Jacobi and SOR
+- Add grid-independence and performance studies
+- Compare the Rust results with the earlier MATLAB model
 
 ## License
 
