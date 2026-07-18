@@ -1,0 +1,37 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Check project
+        run: cargo check --locked
+
+      - name: Build release binary
+        run: cargo build --release --locked
+
+      - name: Run default heat-conduction case
+        run: cargo run --release --locked
+
+      - name: Verify generated outputs
+        run: |
+          test -s results/temperature.csv
+          test -s results/residuals.csv
+          test -s results/summary.txt
+          test -s results/temperature.svg
