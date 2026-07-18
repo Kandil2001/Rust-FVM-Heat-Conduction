@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "rust-heat-diffusion-solver"
-version = "0.1.0"
+name = "rust-fvm-heat-conduction"
+version = "1.0.0"
